@@ -1,5 +1,5 @@
 
-public class PairData {
+public class PairData implements Comparable<PairData>{
 	private String name;
 	public String getName() {
 		return name;
@@ -23,5 +23,24 @@ public class PairData {
 		name = n;
 		data=d;
 	}
+
+	@Override
+	public int compareTo(PairData o) {
+		int compare = this.getName().compareTo(o.getName());
+		if(compare < 0)
+		{
+			return -1;
+		}
+		else 
+		{
+			if(compare>0){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		}
+	}
+	
 
 }

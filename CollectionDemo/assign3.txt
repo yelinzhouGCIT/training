@@ -1,6 +1,10 @@
 Simon,4           
 Anna,10            
 Simon,4            
-Anna,9            
-Anna,5            
+Anna,9   
+Anna,5                   
 Edward,10
+Anna,5   
+Anna,5   
+Anna,5   
+Anna,5   
