@@ -23,6 +23,10 @@ public class SetDemo {
 		System.out.println(mySet);
 		mySet.removeAll(mySet);
 		System.out.println(mySet.isEmpty());
+		
+		String a= "anna";
+		String b="Anna";
+		System.out.println(b.compareTo(b));
 	}
 
 }
