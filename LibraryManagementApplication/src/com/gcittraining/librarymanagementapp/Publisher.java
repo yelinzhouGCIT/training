@@ -1,49 +1,49 @@
 package com.gcittraining.librarymanagementapp;
 
 public class Publisher {
-	public Publisher(int publisherId, String publisherName,
-			String publisherAddress, String publisherPhone) {
+	public Publisher(int pId, String pName,
+			String address, String phone) {
 		super();
-		this.publisherId = publisherId;
-		this.publisherName = publisherName;
-		this.publisherAddress = publisherAddress;
-		this.publisherPhone = publisherPhone;
+		this.pId = pId;
+		this.pName = pName;
+		this.address = address;
+		this.phone = phone;
 	}
 
-	private int publisherId;
-	private String publisherName;
-	private String publisherAddress;
-	private String publisherPhone;
+	private int pId;
+	private String pName;
+	private String address;
+	private String phone;
 
 	public int getPublisherId() {
-		return publisherId;
+		return pId;
 	}
 
 	public void setPublisherId(int publisherId) {
-		this.publisherId = publisherId;
+		this.pId = publisherId;
 	}
 
 	public String getPublisherName() {
-		return publisherName;
+		return pName;
 	}
 
 	public void setPublisherName(String publisherName) {
-		this.publisherName = publisherName;
+		this.pName = publisherName;
 	}
 
 	public String getPublisherAddress() {
-		return publisherAddress;
+		return address;
 	}
 
 	public void setPublisherAddress(String publisherAddress) {
-		this.publisherAddress = publisherAddress;
+		this.address = publisherAddress;
 	}
 
 	public String getPublisherPhone() {
-		return publisherPhone;
+		return phone;
 	}
 
 	public void setPublisherPhone(String publisherPhone) {
-		this.publisherPhone = publisherPhone;
+		this.phone = publisherPhone;
 	}
 }

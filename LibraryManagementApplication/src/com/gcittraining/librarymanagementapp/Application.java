@@ -71,7 +71,6 @@ public class Application {
 
 			
 
-			app.libraryFunctions(input);
 
 			// String updateQuery =
 			// "update tbl_author set authorName = ? where authorId = ?";

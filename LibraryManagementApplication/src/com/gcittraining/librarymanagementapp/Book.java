@@ -1,6 +1,11 @@
 package com.gcittraining.librarymanagementapp;
 
 public class Book {
+
+	private String title;
+	private int bookId;
+	private int pubId;
+
 	public Book(String title, int bookId, int pubId) {
 		super();
 		this.title = title;
@@ -9,14 +14,7 @@ public class Book {
 	}
 
 	public Book() {
-		// TODO Auto-generated constructor stub
 	}
-
-	private String title;
-
-	private int bookId;
-
-	private int pubId;
 
 	public int getBookId() {
 		return bookId;
