@@ -2,9 +2,6 @@ package com.gcit.training.lws.test;
 
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 import com.gcit.training.lws.dao.AuthorDAO;
@@ -15,7 +12,7 @@ public class AuthorDAOTest {
 	@Test
 	public void testAddAuthor() {
 		Author a = new Author();
-		a.setAuthorName("dashabi");
+		a.setAuthorName("aaaaaa");
 		try {
 			new AuthorDAO().addAuthor(a);
 		} catch(Exception e) {
@@ -26,7 +23,7 @@ public class AuthorDAOTest {
 	@Test
 	public void testUpdateAuthor() {
 		Author a = new Author();
-		a.setAuthorName("shabi1");
+		a.setAuthorName("------!");
 		a.setAuthorId(1);
 		try{
 			new AuthorDAO().updateAuthor(a);

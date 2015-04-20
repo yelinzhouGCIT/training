@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.gcit.training.lws.domain.Author;
 import com.gcit.training.lws.domain.LibraryBranch;
 
 public class LibraryBranchDAO implements Serializable{
@@ -53,6 +57,24 @@ public class LibraryBranchDAO implements Serializable{
 			pstmt.setInt(1, libraryBranch.getBranchId());
 			pstmt.executeUpdate();
 
+	}
+	
+	public List<LibraryBranch> readAll() throws SQLException {
+		String select = "select * from tbl_library_branch";
+		PreparedStatement stmt = getConnection().prepareStatement(select);
+		ResultSet rs = stmt.executeQuery();
+		
+		List<LibraryBranch> lbList = new ArrayList<LibraryBranch>();
+		while(rs.next()) {
+			LibraryBranch lb = new LibraryBranch();
+			lb.setBranchId(rs.getInt("branchId"));
+			lb.setBranchName(rs.getString("branchName"));
+			lb.setBranchAddress(rs.getString("branchAddress"));
+			
+			lbList.add(lb);
+		}
+		
+		return lbList;
 	}
 	
 }
