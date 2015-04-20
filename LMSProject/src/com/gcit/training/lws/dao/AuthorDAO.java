@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gcit.training.lws.domain.Author;
+import com.gcit.training.lws.domain.Book;
 
 public class AuthorDAO implements Serializable{
 
@@ -74,6 +75,29 @@ public class AuthorDAO implements Serializable{
 		return authors;
 	}
 	
+	public List<Book> getBookFromAuthor (Author a) throws SQLException{
+		Connection conn = getConnection();
+		List<Book> bList = new ArrayList<Book>();
+		String selectBookId = "select bookId from tbl_book_authors where authorId = ?";
+		PreparedStatement pstmt = conn.prepareStatement(selectBookId);
+		pstmt.setInt(1, a.getAuthorId());
+		ResultSet rs = pstmt.executeQuery();
+		
+		while(rs.next()){
+			String bookNameQuery = "select title from tbl_book where bookId = ?";
+			PreparedStatement subpstmt = conn.prepareStatement(bookNameQuery);
+			pstmt.setInt(1,rs.getInt(1));
+			ResultSet subrs = subpstmt.executeQuery();
+			while(subrs.next()){
+				Book b = new Book();
+				b.setBookId(subrs.getInt("bookId"));
+				b.setTitle(subrs.getString("title"));
+				bList.add(b);
+			}
+		}
+		
+		return bList;
+	}
 	
 	
 }

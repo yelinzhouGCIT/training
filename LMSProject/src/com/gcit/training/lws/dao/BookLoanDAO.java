@@ -7,10 +7,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.gcit.training.lws.domain.Book;
+import com.gcit.training.lws.domain.Borrower;
 import com.gcit.training.lws.domain.LibraryBranch;
 
 public class BookLoanDAO implements Serializable{
@@ -27,7 +31,7 @@ public class BookLoanDAO implements Serializable{
 		return conn;
 	}
 	
-	private List<Book> readBookFromBranch(LibraryBranch branch) throws SQLException{
+	public List<Book> readBookFromBranch(LibraryBranch branch) throws SQLException{
 		Connection coon = getConnection();
 		List<Book> bookList = new ArrayList<Book>();
 		
@@ -52,7 +56,7 @@ public class BookLoanDAO implements Serializable{
 		return bookList;
 	}
 	
-	private void updateDuedate(Book b,Date d) throws SQLException{
+	public void updateDuedate(Book b,Date d) throws SQLException{
 		Connection conn = getConnection();
 
 		String updateQuery = "update tbl_Book_Loan set dudate = ? where BookId = ?";
@@ -60,5 +64,23 @@ public class BookLoanDAO implements Serializable{
 		pstmt.setDate(1, d);
 		pstmt.setInt(2, b.getBookId());
 		pstmt.executeUpdate();
+	}
+	
+	public void checkOutBook(Book bk, LibraryBranch lb, Borrower br) throws SQLException{
+		Connection conn = getConnection();
+		
+		BookCopiesDAO bookCopiesDAO = new BookCopiesDAO();
+		boolean avaliable = bookCopiesDAO.checkAvaliability(bk, lb);
+		if(avaliable){
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Calendar cal = Calendar.getInstance();
+
+			String checkOut = "insert into tbl_book_loans values(?,?,?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(checkOut);
+			pstmt.setInt(1,bk.getBookId());
+			pstmt.setInt(2, lb.getBranchId());
+			pstmt.setInt(3,br.getCardNo());
+			pstmt.setDate(4, dateFormat.format(cal.getTime()));
+		}
 	}
 }
