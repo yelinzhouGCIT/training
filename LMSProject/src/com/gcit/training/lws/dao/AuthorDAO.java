@@ -17,6 +17,14 @@ public class AuthorDAO implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1619700647002508164L;
+	
+
+	private Connection getConnection() throws SQLException {
+		Connection conn;
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/library", "root", "Arashi21AMY");
+		return conn;
+	}
 
 	public void addAuthor(Author author) throws SQLException {
 		Connection conn = getConnection();
@@ -49,13 +57,6 @@ public class AuthorDAO implements Serializable{
 
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn;
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/library", "root", "root");
-		return conn;
-	}
-	
 	public List<Author> readAll() throws SQLException {
 		String select = "select * from tbl_author";
 		PreparedStatement stmt = getConnection().prepareStatement(select);
@@ -72,6 +73,7 @@ public class AuthorDAO implements Serializable{
 		
 		return authors;
 	}
+	
 	
 	
 }
