@@ -44,8 +44,17 @@ public class AuthorDAOTest {
 	}
 
 	@Test
-	public void testRemoveAuthor() {
-		//fail("Not yet implemented");
+	public void testRemoveAuthor() throws SQLException {
+		Author a = new Author();
+		Connection conn = getConnection();
+		a.setAuthorId(1);
+		try{
+			new AuthorDAO(conn).removeAuthor(a);
+			conn.commit();
+		}catch(Exception e) {
+			conn.rollback();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
