@@ -2,58 +2,81 @@ package com.gcit.training.lws.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gcit.training.lws.domain.Borrower;
 
-public class BorrowerDAO implements Serializable {
+public class BorrowerDAO extends BaseDAO<Borrower> implements Serializable{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7854855521542157339L;
+	private static final long serialVersionUID = 8472440725720701828L;
 
-	private Connection getConnection() throws SQLException {
-		Connection conn;
-		conn = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/library", "root", "Arashi21AMY");
-		return conn;
+	public BorrowerDAO(Connection conn) {
+		super(conn);
 	}
 
-	public void addBorrower(Borrower borrower) throws SQLException {
-		Connection conn = getConnection();
-
-		String updateQuery = "insert into tbl_Borrower (name,address,phone) values (?,?,?)";
-		PreparedStatement pstmt = conn.prepareStatement(updateQuery);
-		pstmt.setString(1, borrower.getBorrowerName());
-		pstmt.setString(2, borrower.getBorrowerAddress());
-		pstmt.setString(3, borrower.getBorrowerPhone());
-		pstmt.executeUpdate();
-
+	public void addBorrower(Borrower b) throws SQLException {
+		save("Insert into tbl_borrower(name, address, phone) values(?,?,?)",
+				new Object[] { b.getBorrowerName(), b.getBorrowerAddress(),
+						b.getBorrowerPhone() });
 	}
 
-	public void updateBorrower(Borrower borrower) throws SQLException {
-		Connection conn = getConnection();
-
-		String updateQuery = "update tbl_Borrower set Name = ?,address=?,phone=? where cardNo = ?";
-		PreparedStatement pstmt = conn.prepareStatement(updateQuery);
-		pstmt.setString(1, borrower.getBorrowerName());
-		pstmt.setString(2, borrower.getBorrowerAddress());
-		pstmt.setString(3, borrower.getBorrowerPhone());
-		pstmt.setInt(4, borrower.getCardNo());
-		pstmt.executeUpdate();
+	public void updateBorrower(Borrower b) throws SQLException {
+		save("update tbl_borrower set name = ?, address = ?, phone = ? where cardNo = ? ",
+				new Object[] { b.getBorrowerName(), b.getBorrowerAddress(),
+						b.getBorrowerPhone(), b.getCardNo() });
 
 	}
-
-	public void removeBorrower(Borrower Borrower) throws SQLException {
-		Connection conn = getConnection();
-
-		String removeQuery = "delete from tbl_Borrower where cardNo=?";
-		PreparedStatement pstmt = conn.prepareStatement(removeQuery);
-		pstmt.setInt(1, Borrower.getCardNo());
-		pstmt.executeUpdate();
+	
+	public void removeBorrower(Borrower b) throws SQLException{
+		save("delete from tbl_borrower where cardNo = ?",new Object[]{b.getCardNo()});
 	}
+	
+	public Borrower readOne(int cardNo) throws SQLException
+	{
+		@SuppressWarnings("unchecked")
+		List<Borrower> borrowerList = (List<Borrower>) read("select * from tbl_borrower where cardNo = ?", new Object[]{cardNo});
+		if(borrowerList != null && borrowerList.size()>0)
+		{
+			return borrowerList.get(0);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Borrower> readAll() throws SQLException
+	{
+		return (List<Borrower>) read("select * from tbl_borrower",null);
+	}
+	@Override
+	public List<Borrower> mapResults(ResultSet rs) throws SQLException {
+		List<Borrower> bList = new ArrayList<Borrower>();
+		while (rs.next()) {
+			Borrower b = new Borrower();
+			b.setCardNo(rs.getInt("cardNo"));
+			b.setBorrowerName(rs.getString("name"));
+			b.setBorrowerAddress(rs.getString("address"));
+			b.setBorrowerPhone(rs.getString("phone"));
+
+			bList.add(b);
+		}
+
+		return bList;
+	}
+
+	@Override
+	public List<?> mapResultsFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

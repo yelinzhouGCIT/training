@@ -2,6 +2,11 @@ package com.gcit.training.lws.test;
 
 import static org.junit.Assert.fail;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.gcit.training.lws.dao.AuthorDAO;
@@ -9,48 +14,54 @@ import com.gcit.training.lws.domain.Author;
 
 public class AuthorDAOTest {
 
+	private Connection getConnection() throws SQLException {
+		Connection conn;
+		conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/library", "root", "");
+		
+		conn.setAutoCommit(false);
+		
+		return conn;
+	}
+
 	@Test
-	public void testAddAuthor() {
+	public void testAddAuthor() throws SQLException {
 		Author a = new Author();
-		a.setAuthorName("aaaaaa");
+		Connection conn = getConnection();
+		a.setAuthorName("Testddfvnsdfnskdjfnskjdfnksjnfksdnfksdnfksjdnfksjdnfkjdsnfkjsdnfkjsdnfkjsnfkjsndfkjsndfkjsndfkjsdfkjsdbfjksdfnkjsdnfkjsdn");
 		try {
-			new AuthorDAO().addAuthor(a);
+			new AuthorDAO(conn).addAuthor(a);
+			conn.commit();
 		} catch(Exception e) {
+			conn.rollback();
 			fail(e.getMessage());
 		}
 	}
 
 	@Test
 	public void testUpdateAuthor() {
-		Author a = new Author();
-		a.setAuthorName("------!");
-		a.setAuthorId(1);
-		try{
-			new AuthorDAO().updateAuthor(a);
-		}catch(Exception e){
-			fail(e.getMessage());
-		}
+		//fail("Not yet implemented");
 	}
 
 	@Test
 	public void testRemoveAuthor() {
-		Author a = new Author();
-		a.setAuthorId(7);
-		try{
-			new AuthorDAO().removeAuthor(a);
-		}catch(Exception e){
-			fail(e.getMessage());
-		}
+		//fail("Not yet implemented");
 	}
-	
-	@Test
-	public void testReadAll(){
-		try{
-			new AuthorDAO().readAll();
-		}catch(Exception e){
-			fail(e.getMessage());
-		}
-	}
-	
 
+	@Test
+	public void testReadAll() {
+		try {			
+			List<Author> authors = new AuthorDAO(getConnection()).readAll();
+			
+			for(Author a : authors) {
+				System.out.println(a.getAuthorId() + " : " + a.getAuthorName());
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//fail("Not yet implemented");
+	}
 }

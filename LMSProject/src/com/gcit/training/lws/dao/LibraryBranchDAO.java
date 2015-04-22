@@ -2,79 +2,76 @@ package com.gcit.training.lws.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gcit.training.lws.domain.Author;
 import com.gcit.training.lws.domain.LibraryBranch;
 
-public class LibraryBranchDAO implements Serializable{
+public class LibraryBranchDAO extends BaseDAO<LibraryBranch> implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8788767940620360188L;
-	private Connection getConnection() throws SQLException {
-		Connection conn;
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/library", "root", "Arashi21AMY");
-		return conn;
-	}
-	
-	public void addLibraryBranch(LibraryBranch libraryBranch) throws SQLException {
-		Connection conn = getConnection();
+	private static final long serialVersionUID = -5632016576745968314L;
 
-			String updateQuery = "insert into tbl_Library_Branch (BranchName, branchAddress) values (?,?)";
-			PreparedStatement pstmt = conn.prepareStatement(updateQuery);
-			pstmt.setString(1, libraryBranch.getBranchName());
-			pstmt.setString(2,libraryBranch.getBranchAddress());
-			pstmt.executeUpdate();
+	public LibraryBranchDAO(Connection conn) {
+		super(conn);
+	}
+
+	public void addLibraryBranch(LibraryBranch b) throws SQLException {
+		save("Insert into tbl_library_branch(branchName, branchAddress) values(?,?)",
+				new Object[] { b.getBranchName(),b.getBranchAddress() });
+	}
+
+	public void updateLibraryBranch(LibraryBranch b) throws SQLException {
+		save("update tbl_library_branch set branchName = ?, branchAddress = ? where branchId = ? ",
+				new Object[] { b.getBranchName(),b.getBranchAddress(),b.getBranchId() });
 
 	}
-	
-	public void updateLibraryBranch(LibraryBranch libraryBranch) throws SQLException {
-		Connection conn = getConnection();
 
-			String updateQuery = "update tbl_Library_Branch set BranchName = ?,BranchAddress = ? where BranchId = ?";
-			PreparedStatement pstmt = conn.prepareStatement(updateQuery);
-			pstmt.setString(1, libraryBranch.getBranchName());
-			pstmt.setString(2,libraryBranch.getBranchAddress());
-
-			pstmt.setInt(3, libraryBranch.getBranchId());
-			pstmt.executeUpdate();
-
+	public void removeLibraryBranch(LibraryBranch b) throws SQLException {
+		save("delete from tbl_library_branch where branchId = ?",
+				new Object[] { b.getBranchId() });
 	}
-	
-	public void removeLibraryBranch(LibraryBranch libraryBranch) throws SQLException {
-		Connection conn = getConnection();
 
-			String removeQuery = "delete from tbl_Library_Branch where BranchId=?";
-			PreparedStatement pstmt = conn.prepareStatement(removeQuery);
-			pstmt.setInt(1, libraryBranch.getBranchId());
-			pstmt.executeUpdate();
-
-	}
-	
+	@SuppressWarnings("unchecked")
 	public List<LibraryBranch> readAll() throws SQLException {
-		String select = "select * from tbl_library_branch";
-		PreparedStatement stmt = getConnection().prepareStatement(select);
-		ResultSet rs = stmt.executeQuery();
-		
+		return (List<LibraryBranch>) read("select * from tbl_library_branch",null);
+	}
+	
+	public LibraryBranch readOne(int branchId) throws SQLException {
+		@SuppressWarnings("unchecked")
+		List<LibraryBranch> branchList = (List<LibraryBranch>) read(
+				"select * from tbl_library_branch where branchId = ?",
+				new Object[] { branchId });
+		if (branchList != null && branchList.size() > 0) {
+			return branchList.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<LibraryBranch> mapResults(ResultSet rs) throws SQLException {
 		List<LibraryBranch> lbList = new ArrayList<LibraryBranch>();
-		while(rs.next()) {
+		while (rs.next()) {
 			LibraryBranch lb = new LibraryBranch();
-			lb.setBranchId(rs.getInt("branchId"));
 			lb.setBranchName(rs.getString("branchName"));
 			lb.setBranchAddress(rs.getString("branchAddress"));
-			
+			lb.setBranchId(rs.getInt("branchId"));
 			lbList.add(lb);
 		}
-		
+
 		return lbList;
 	}
-	
+
+	@Override
+	public List<?> mapResultsFirstLevel(ResultSet rs) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

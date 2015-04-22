@@ -8,6 +8,8 @@ public class Book {
 	private String title;
 	
 	List<Author> authors;
+	
+	private Publisher publisher;
 
 	/**
 	 * @return the bookId
@@ -89,6 +91,14 @@ public class Book {
 		} else if (!title.equals(other.title))
 			return false;
 		return true;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
 
 }
