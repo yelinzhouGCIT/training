@@ -60,9 +60,11 @@ public class AdministratorService {
 		Connection conn = ConnectionUtil.getConnection();
 		try {
 			new BorrowerDAO(conn).addBorrower(b);
+			//System.out.println(b.getBorrowerAddress()+b.getBorrowerName()+b.getBorrowerPhone());
 			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
+			//System.out.println(e.getMessage()+"hahahah");
 			throw e;
 		}
 	}
