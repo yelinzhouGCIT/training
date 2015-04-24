@@ -63,7 +63,6 @@ public class AuthorDAO extends BaseDAO<Author> implements Serializable {
 			a.setAuthorId(rs.getInt("authorId"));
 			a.setAuthorName(rs.getString("authorName"));
 
-			@SuppressWarnings("unchecked")
 			List<Book> books = (List<Book>) bDAO.readFirstLevel("select * from tbl_book where bookId in "
 					+ "(select bookId from tbl_book_authors where authorId = ?)", new Object[]{a.getAuthorId()});
 			a.setBooks(books);
@@ -76,6 +75,7 @@ public class AuthorDAO extends BaseDAO<Author> implements Serializable {
 	@Override
 	protected List<Author> mapResultsFirstLevel(ResultSet rs) throws SQLException {
 		List<Author> authors = new ArrayList<Author>();
+		BookDAO bDAO = new BookDAO(conn);
 		while (rs.next()) {
 			Author a = new Author();
 			a.setAuthorId(rs.getInt("authorId"));

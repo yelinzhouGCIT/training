@@ -37,22 +37,10 @@ public class BookDAO extends BaseDAO<Book> implements Serializable {
 		}
 	}
 
-	public void updateBook(Book book) throws SQLException {
-		save("update tbl_book set title = ? where bookId = ?", new Object[] {
-				book.getTitle(), book.getBookId() });
-		if (book.getPublisher() != null) {
-			save("update tbl_book set pubId = ? where bookId = ?",
-					new Object[] { book.getPublisher().getId(),
-							book.getBookId() });
-		} else {
-			save("update tbl_book set pubId = ? where bookId = ?",
-					new Object[] { null, book.getBookId() });
-		}
+	public void updateAuthor(Book book) throws SQLException {
 	}
 
 	public void removeAuthor(Book book) throws SQLException {
-		save("delete from tbl_book where bookId=?",
-				new Object[] { book.getBookId() });
 	}
 
 	@SuppressWarnings("unchecked")
@@ -61,12 +49,12 @@ public class BookDAO extends BaseDAO<Book> implements Serializable {
 	}
 
 	public Book readOne(int bookId) throws SQLException {
-		@SuppressWarnings("unchecked")
-		List<Book> book = (List<Book>) read(
+
+		List<Book> bookList = (List<Book>) read(
 				"select * from tbl_book where bookId = ?",
 				new Object[] { bookId });
-		if (book != null && book.size() > 0) {
-			return book.get(0);
+		if (bookList != null && bookList.size() > 0) {
+			return bookList.get(0);
 		} else {
 			return null;
 		}
@@ -101,13 +89,22 @@ public class BookDAO extends BaseDAO<Book> implements Serializable {
 	protected List<Book> mapResultsFirstLevel(ResultSet rs) throws SQLException {
 		List<Book> books = new ArrayList<Book>();
 		PublisherDAO pDAO = new PublisherDAO(conn);
+		AuthorDAO aDAO = new AuthorDAO(conn);
+
 		while (rs.next()) {
 			Book b = new Book();
 			b.setBookId(rs.getInt("bookId"));
 			b.setTitle(rs.getString("title"));
 			b.setPublisher(pDAO.readOne(rs.getInt("pubId")));
+
 			books.add(b);
 		}
 		return books;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Book> getBooksByName(String name) throws SQLException {
+		return (List<Book>) read("select * from tbl_book where title like ?",
+				new Object[] { name });
 	}
 }

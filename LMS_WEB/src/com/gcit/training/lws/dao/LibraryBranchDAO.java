@@ -72,6 +72,9 @@ public class LibraryBranchDAO extends BaseDAO<LibraryBranch> implements Serializ
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
+	public List<LibraryBranch> getLBbyName(String lb) throws SQLException{
+		return (List<LibraryBranch>) read("select * from tbl_library_branch where branchName like ?", new Object[] {lb});
+	}
 
 }

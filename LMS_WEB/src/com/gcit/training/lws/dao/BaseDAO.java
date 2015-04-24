@@ -45,10 +45,12 @@ public abstract class BaseDAO<T> {
 
 	public void save(String query, Object[] vals) throws SQLException {
 		Connection conn = getConnection();
+		System.out.println("val"+vals.toString());
 		PreparedStatement pstmt = conn.prepareStatement(query);
 		int count = 1;
 		for (Object obj : vals) {
 			pstmt.setObject(count, obj);
+			count++;
 		}
 		pstmt.executeUpdate();
 	}

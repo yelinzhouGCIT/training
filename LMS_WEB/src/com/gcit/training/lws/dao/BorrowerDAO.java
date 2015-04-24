@@ -21,7 +21,7 @@ public class BorrowerDAO extends BaseDAO<Borrower> implements Serializable{
 	}
 
 	public void addBorrower(Borrower b) throws SQLException {
-		System.out.println("This is"+b.getBorrowerName()+"Address"+b.getBorrowerAddress()+"Phone"+b.getBorrowerPhone());
+		
 		save("Insert into tbl_borrower(name, address, phone) values(?,?,?)",
 				new Object[] { b.getBorrowerName(), b.getBorrowerAddress(),
 						b.getBorrowerPhone() });
@@ -79,5 +79,9 @@ public class BorrowerDAO extends BaseDAO<Borrower> implements Serializable{
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Borrower> getBorrowerByName(String name) throws SQLException{
+		return (List<Borrower>) read("select * from tbl_borrowers where name like ?", new Object[]{name});
+	}
 
 }

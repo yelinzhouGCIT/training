@@ -91,5 +91,8 @@ public class GenreDAO extends BaseDAO<Genre> implements Serializable {
 		}
 		return gList;
 	}
-
+	@SuppressWarnings("unchecked")
+	public List<Genre> getGenreByName(String g) throws SQLException{
+		return (List<Genre>) read("select * from tbl_Genre where genre_name like ?", new Object[] {g});
+	}
 }

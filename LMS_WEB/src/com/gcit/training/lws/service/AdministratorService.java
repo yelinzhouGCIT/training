@@ -2,6 +2,7 @@ package com.gcit.training.lws.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.gcit.training.lws.dao.AuthorDAO;
 import com.gcit.training.lws.dao.BookDAO;
@@ -60,11 +61,9 @@ public class AdministratorService {
 		Connection conn = ConnectionUtil.getConnection();
 		try {
 			new BorrowerDAO(conn).addBorrower(b);
-			//System.out.println(b.getBorrowerAddress()+b.getBorrowerName()+b.getBorrowerPhone());
 			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
-			//System.out.println(e.getMessage()+"hahahah");
 			throw e;
 		}
 	}
@@ -79,16 +78,59 @@ public class AdministratorService {
 			throw e;
 		}
 	}
-	
-	public void addBook(Book b) throws Exception{
+
+	public void addBook(Book b) throws Exception {
 		Connection conn = ConnectionUtil.getConnection();
-		try{
+		try {
 			new BookDAO(conn).addBook(b);
 			conn.commit();
-		}catch(Exception e){
+		} catch (Exception e) {
+			conn.rollback();
+			throw e;
+		}
+	}
+
+	public void removeAuthor(Author author) throws Exception {
+		Connection conn = ConnectionUtil.getConnection();
+		try {
+			new AuthorDAO(conn).removeAuthor(author);
+			conn.commit();
+		} catch (Exception e) {
 			conn.rollback();
 			throw e;
 		}
 	}
 	
+	public void removePublisher(Publisher p) throws Exception {
+		Connection conn = ConnectionUtil.getConnection();
+		try {
+			new PublisherDAO(conn).removePublisher(p);
+			conn.commit();
+		} catch (Exception e) {
+			conn.rollback();
+			throw e;
+		}
+	}
+
+	public List<Author> getAuthors() throws Exception {
+		return new AuthorDAO(ConnectionUtil.getConnection()).readAll();
+	}
+	
+	public List<Book> getBooks() throws Exception {
+		return new BookDAO(ConnectionUtil.getConnection()).readAll();
+	}
+	public List<Publisher> getPublishers() throws Exception {
+		return new PublisherDAO(ConnectionUtil.getConnection()).readAll();
+	}
+	
+	public List<Borrower> getBorrowers() throws Exception {
+		return new BorrowerDAO(ConnectionUtil.getConnection()).readAll();
+	}
+	
+	public List<Genre> getGenres() throws Exception {
+		return new GenreDAO(ConnectionUtil.getConnection()).readAll();
+	}
+	public List<LibraryBranch> getLibraryBranchs() throws Exception {
+		return new LibraryBranchDAO(ConnectionUtil.getConnection()).readAll();
+	}
 }
