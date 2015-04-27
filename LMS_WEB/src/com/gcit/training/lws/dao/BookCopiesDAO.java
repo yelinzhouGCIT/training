@@ -21,6 +21,7 @@ public class BookCopiesDAO extends BaseDAO<BookCopies> implements Serializable{
 	{
 		super(conn);
 	}
+	
 	public void addBookCopy(BookCopies bc) throws SQLException {
 
 		save("insert into tbl_book_copies set bookId = ?, branchId = ?, noOfCopies = ?",

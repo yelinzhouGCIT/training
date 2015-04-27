@@ -1,6 +1,9 @@
 package com.gcit.training.lws.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gcit.training.lws.domain.Author;
+import com.gcit.training.lws.domain.Book;
 import com.gcit.training.lws.domain.Borrower;
 import com.gcit.training.lws.domain.Genre;
 import com.gcit.training.lws.domain.LibraryBranch;
@@ -19,8 +23,9 @@ import com.gcit.training.lws.service.AdministratorService;
 /**
  * Servlet implementation class LibaryManagement
  */
-@WebServlet({ "/addAuthor", "/addPublisher", "/addBorrower", "/addGenre",
-		"/addLibraryBranch", "/deleteAuthor", "/deletePublisher" })
+@WebServlet({ "/addAuthor", "/addPublisher", "/addBorrower", "/addBook","/addGenre",
+		"/addLibraryBranch", "/deleteBook","/deleteAuthor", "/deletePublisher",
+		"/editAuthor", "/editBook","/editLB" })
 public class LibaryManagement extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -55,9 +60,15 @@ public class LibaryManagement extends HttpServlet {
 			rd = getServletContext().getRequestDispatcher("/listPublisher.jsp");
 			rd.forward(request, response);
 			break;
+		case "/deleteBook":
+			deleteBook(request);
+			rd = getServletContext().getRequestDispatcher("/listBooks.jsp");
+			rd.forward(request, response);
+			break;
 		}
 
 	}
+
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -68,7 +79,8 @@ public class LibaryManagement extends HttpServlet {
 		String function = request.getRequestURI().substring(
 				request.getContextPath().length(),
 				request.getRequestURI().length());
-
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(
+				"/admin.jsp");
 		switch (function) {
 		case "/addAuthor": {
 			addAuthor(request);
@@ -90,12 +102,30 @@ public class LibaryManagement extends HttpServlet {
 		case "/addGenre": {
 			addGenre(request);
 		}
+		case "/editAuthor": {
+			editAuthor(request);
+			rd = getServletContext().getRequestDispatcher("/listAuthors.jsp");
+			break;
+		}
+		
+		case "/editBook":{
+			editBook(request);
+			rd = getServletContext().getRequestDispatcher("/listBooks.jsp");
+			break;
+		}
+		case "/editLB":{
+			editLB(request);
+			rd = getServletContext().getRequestDispatcher("/librarian.jsp");
+			break;
+		}
+		
+		case "/addBook": {
+			addBook(request);
+		}
 		default:
 			break;
 		}
 
-		RequestDispatcher rd = getServletContext().getRequestDispatcher(
-				"/admin.jsp");
 		rd.forward(request, response);
 	}
 
@@ -183,6 +213,45 @@ public class LibaryManagement extends HttpServlet {
 		}
 	}
 
+	private void addBook(HttpServletRequest request) {
+		String authorId = request.getParameter("authorId");
+
+		String publisherId = request.getParameter("publisherId");
+		String title = request.getParameter("bookTitle");
+		String genreId = request.getParameter("genreId");
+
+		List<Author> aList = new ArrayList<Author>();
+		StringTokenizer st = new StringTokenizer(authorId, ",");
+		while (st.hasMoreTokens()) {
+			int aId = Integer.parseInt(st.nextToken());
+			Author a = new Author();
+			a.setAuthorId(aId);
+			aList.add(a);
+		}
+
+		Genre g = new Genre();
+		g.setGenreId(Integer.parseInt(genreId));
+
+		Book b = new Book();
+		b.setTitle(title);
+		b.setAuthors(aList);
+
+		Publisher p = new Publisher();
+		p.setId(Integer.parseInt(publisherId));
+
+		b.setPublisher(p);
+		System.out.println(b.toString());
+		try {
+			new AdministratorService().addBook(b);
+			request.setAttribute("result", "Book added succesfully!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Book add failed!: " + e.getMessage());
+		}
+	}
+
 	private void deleteAuthor(HttpServletRequest request) {
 		String authorId = request.getParameter("authorId");
 		Author a = new Author();
@@ -196,6 +265,22 @@ public class LibaryManagement extends HttpServlet {
 			request.setAttribute("result",
 					"Author remove failed!: " + e.getMessage());
 		}
+	}
+	
+	private void deleteBook(HttpServletRequest request) {
+		String bookId = request.getParameter("bookId");
+		Book b = new Book();
+		b.setBookId(Integer.parseInt(bookId));
+		try {
+			new AdministratorService().removeBook(b);
+			request.setAttribute("result", "Book removed succesfully!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Book remove failed!: " + e.getMessage());
+		}
+		
 	}
 
 	private void deletePublisher(HttpServletRequest request) {
@@ -212,6 +297,66 @@ public class LibaryManagement extends HttpServlet {
 					"Publisher remove failed!: " + e.getMessage());
 		}
 
+	}
+
+	private void editAuthor(HttpServletRequest request) {
+		String authorName = request.getParameter("authorName");
+		String authorId = request.getParameter("authorId");
+
+		Author author = new Author();
+		author.setAuthorId(Integer.parseInt(authorId));
+		author.setAuthorName(authorName);
+
+		try {
+			new AdministratorService().editAuthor(author);
+			request.setAttribute("result", "Author edited succesfully!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author edit failed!: " + e.getMessage());
+		}
+	}
+	
+	
+	private void editBook(HttpServletRequest request) {
+		String bookTitle = request.getParameter("bookName");
+		String bId = request.getParameter("bookId");
+
+		Book b = new Book();
+		b.setBookId(Integer.parseInt(bId));
+		b.setTitle(bookTitle);
+
+		try {
+			new AdministratorService().editBook(b);
+			request.setAttribute("result", "Book edited succesfully!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Book edit failed!: " + e.getMessage());
+		}
+	}
+	
+	private void editLB(HttpServletRequest request) {
+		String lbName = request.getParameter("lbName");
+		String lbAddress = request.getParameter("lbAddress");
+		String lbId = request.getParameter("lbId");
+
+		LibraryBranch lb = new LibraryBranch();
+		lb.setBranchId(Integer.parseInt(lbId));
+		lb.setBranchName(lbName);
+		lb.setBranchAddress(lbAddress);
+
+		try {
+			new AdministratorService().editLB(lb);
+			request.setAttribute("result", "Library Branch edited succesfully!");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Library Branch edit failed!: " + e.getMessage());
+		}
 	}
 
 }

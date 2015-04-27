@@ -27,7 +27,9 @@ ${result}
 		<td><%=p.getName()%></td>
 		<td><%=p.getAddress() %></td>
 		<td><%=p.getPhoneNumber() %></td>
-		<td><button class="btn btn-success">Edit</button></td>
+		<td><button class="btn btn-success"
+				href="editPublisher.jsp?publisherIdToEdit=<%=p.getId()%>"
+				data-target="#myModal1" data-toggle="modal">Edit</button></td>
 		<td><button class="btn btn-danger"
 				onclick="javascript:location.href='deletePublisher?publisherId=<%=p.getId()%>';">Delete</button></td>
 	</tr>

@@ -9,6 +9,20 @@ public class Book {
 	
 	List<Author> authors;
 	List<Genre> genres;
+	/**
+	 * @return the genres
+	 */
+	public List<Genre> getGenres() {
+		return genres;
+	}
+
+	/**
+	 * @param genres the genres to set
+	 */
+	public void setGenres(List<Genre> genres) {
+		this.genres = genres;
+	}
+
 	private Publisher publisher;
 
 	/**
